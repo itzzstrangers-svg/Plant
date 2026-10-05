@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // After deploying the backend (Render, Railway, etc.),
     // put its public HTTPS address in PRODUCTION_API below.
 
-    const PRODUCTION_API = "https://plant-2-st8e.onrender.com/api";
+    const PRODUCTION_API = "https://plant-3-rua9.onrender.com/api";
 
     const isLocal = ["localhost", "127.0.0.1", ""].includes(
         window.location.hostname
