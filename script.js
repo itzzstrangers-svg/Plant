@@ -290,6 +290,24 @@ document.addEventListener("DOMContentLoaded", () => {
     const wikiMisses = new Set();
     let wikiCache = {};
 
+    // Debug panel: open the site with ?debug=1 to see why a photo failed.
+    const DEBUG = /[?&]debug=1/.test(location.search);
+    const debugLines = [];
+    function dbg(msg) {
+        if (!DEBUG) return;
+        debugLines.push(msg);
+        let box = document.getElementById("photoDebug");
+        if (!box) {
+            box = document.createElement("pre");
+            box.id = "photoDebug";
+            box.style.cssText = "position:fixed;left:0;right:0;bottom:0;z-index:99999;margin:0;" +
+                "padding:8px;max-height:40vh;overflow:auto;background:#000;color:#0f0;" +
+                "font:11px monospace;white-space:pre-wrap;word-break:break-all;";
+            document.body.appendChild(box);
+        }
+        box.textContent = debugLines.slice(-12).join("\n");
+    }
+
     try {
         wikiCache = JSON.parse(localStorage.getItem(WIKI_KEY)) || {};
     } catch (e) {
@@ -309,12 +327,18 @@ document.addEventListener("DOMContentLoaded", () => {
                     "https://en.wikipedia.org/api/rest_v1/page/summary/" +
                     encodeURIComponent(title.replace(/ /g, "_"))
                 );
-                if (!response.ok) continue;
+                if (!response.ok) {
+                    dbg(slug + ": wiki '" + title + "' status " + response.status);
+                    continue;
+                }
 
                 const info = await response.json();
                 const thumb = info.thumbnail && info.thumbnail.source;
 
+                if (!thumb) dbg(slug + ": wiki '" + title + "' has no thumbnail");
+
                 if (thumb) {
+                    dbg(slug + ": found " + thumb);
                     wikiCache[slug] = thumb;
                     try {
                         localStorage.setItem(WIKI_KEY, JSON.stringify(wikiCache));
@@ -324,7 +348,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     return wikiCache[slug];
                 }
             } catch (e) {
-                // offline or blocked, try the next name
+                dbg(slug + ": fetch error " + e.message);
             }
         }
 
@@ -345,6 +369,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!img || img.tagName !== "IMG" || !img.classList.contains("plant-photo")) return;
 
         if (img.dataset.wiki) {
+            dbg((img.dataset.slug || "?") + ": image failed to load " + img.src);
             showEmoji(img);
             return;
         }
