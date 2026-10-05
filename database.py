@@ -16,7 +16,7 @@ DATABASE_NAME = os.environ.get(
 
 # Bump this whenever the schema or the seed data changes.
 # On startup an out-of-date database is rebuilt automatically.
-SCHEMA_VERSION = 4
+SCHEMA_VERSION = 5
 
 VALID_SEASONS = ("summer", "monsoon", "winter")
 SEVERITY_WEIGHT = {"high": 3, "medium": 2, "low": 1}
