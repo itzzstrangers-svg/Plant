@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // After deploying the backend (Render, Railway, etc.),
     // put its public HTTPS address in PRODUCTION_API below.
 
-    const PRODUCTION_API = "https://plant-1-ptt0.onrender.com/api";
+    const PRODUCTION_API = "https://nursery-information.onrender.com/api";
 
     const isLocal = ["localhost", "127.0.0.1", ""].includes(
         window.location.hostname
@@ -286,7 +286,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Photo order: 1) images/plants/<slug>.jpg (from fetch_images.py),
     // 2) a photo looked up live on Wikipedia (remembered in this browser),
     // 3) the emoji.
-    const WIKI_KEY = "nurseryiq_wiki_images";
+    const WIKI_KEY = "nurseryiq_wiki_images_v3";
     const wikiMisses = new Set();
     let wikiCache = {};
 
@@ -315,7 +315,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const thumb = info.thumbnail && info.thumbnail.source;
 
                 if (thumb) {
-                    wikiCache[slug] = thumb.replace(/\/\d+px-/, "/480px-");
+                    wikiCache[slug] = thumb;
                     try {
                         localStorage.setItem(WIKI_KEY, JSON.stringify(wikiCache));
                     } catch (e) {
